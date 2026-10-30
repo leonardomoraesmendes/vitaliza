@@ -1,0 +1,2 @@
+# Apenas para exportar o PDF; a preparação de dados usa requirements.txt.
+reportlab==4.4.9

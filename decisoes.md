@@ -32,6 +32,27 @@ Todo problema de qualidade ou regra de cálculo entra na tabela: uma linha por d
 
 ## Detalhes
 
+### Preparação e diagnóstico de John — S5 (27/10/2026)
+
+As decisões abaixo implementam a contribuição aprovada de preparação, integração e diagnóstico. Não substituem decisões de clusterização, personas ou priorização final das outras frentes. Execução: `src/preparar_diagnostico_s5.py`; resultados e critérios em `dados/saidas/s5_john/`.
+
+| Data | Arquivo | Dimensão | Problema | Decisão | Critério | Linhas afetadas | Quem |
+|---|---|---|---|---|---|---|---|
+| 2026-10-27 | assinaturas × eventos | Regra | Retrato não representa estado histórico | Semear apenas inícios anteriores a 01/07/2024; demais inícios e fins vêm dos eventos; validar alternância e estabilidade de plano/canal | Intervalo início inclusivo e fim exclusivo; desligamento de renovação não encerra assinatura | 260.328 exposições usuário-mês de jan/25 a set/26; 14.753 pagantes no corte | John + Codex |
+| 2026-10-27 | uso_mensal | Temporalidade | Uso do mês da saída pode refletir a própria saída | Usar o mês anterior e exigir assinatura vigente desde o início desse mês nas comparações por faixa de uso | Cobertura desde jan/25; jan/25 não recebe uso de dez/24; ausência de treino em cobertura conhecida vira zero; sessões ausentes de 2025 ficam nulas | Contagens por grupo nos CSVs de churn por uso | John + Codex |
+| 2026-10-27 | atividades | Temporalidade | Garmin registra em UTC sem sufixo | Aplicar correção −3h antes do corte e dos pares | Regra por origem documentada na exploração anterior | 207.954 registros | John + Codex |
+| 2026-10-27 | atividades | Unicidade | Cópias do relógio no app distorcem volume | Reconhecer pares pelo tipo original e manter o relógio | Mesma conta, tipo original e duração, diferença até 5 min; cada registro em no máximo um par | 9.383 cópias removidas | John + Codex |
+| 2026-10-27 | atividades | Consistência | Tipos em dois idiomas fragmentam agregações | Padronizar tipo depois de reconhecer os pares | Mapa já proposto na exploração anterior | 376.930 tipos padronizados | John + Codex |
+| 2026-10-27 | atividades | Validade | Duração inválida e distância incompatível | Manter marcação; treinos com duração inválida não entram no volume válido; distância inválida fica nula e fora dos clusters | Duração ≤ 0; distância divergente do ritmo em mais de 10%; fallback >200 km quando ritmo/duração não avaliáveis | 3.649 durações antes da deduplicação; 999 distâncias incompatíveis + 3 altas não avaliáveis | John + Codex |
+| 2026-10-27 | onboarding | Validade | Dias pretendidos em texto | Extrair apenas valores inequívocos de 1 a 7; todos = 7; preservar ausência | N, Nx ou N vezes; não imputar campo vazio | Dicionário gerado registra ausências da base final | John + Codex |
+| 2026-10-27 | feed_posts × amizades × suporte | Temporalidade | Conteúdo/data de resolução posterior ao corte | Excluir posts e relações futuras; reconstruir pendência do ticket por abertura e resolução; não usar status atual como passado | Limite exclusivo 01/10/2026 em Brasília | 122 posts e 273 relações futuras; 41 resoluções após o corte | John + Codex |
+| 2026-10-27 | usuarios | Temporalidade | Cadastro posterior ao corte | Sinalizar; tempo de cadastro negativo ficaria ausente | Data de cadastro ≥ limite exclusivo | 119 cadastros; nenhum entre os 14.753 ativos do corte | John + Codex |
+| 2026-10-27 | usuarios × assinaturas | Consistência | Assinatura anterior ao cadastro | Sinalizar, sem alterar os totais de assinatura conciliados | Início anterior ao dia de cadastro | 42 assinaturas | John + Codex |
+| 2026-10-27 | uso_mensal × atividades | Consistência | Contagem do BI difere do detalhe tratado | Manter fontes identificadas; tendência candidata aos clusters usa duas janelas iguais de 30 dias da atividade tratada | Não atribuir toda divergência a cópias; não fundir BI e detalhe como medidas equivalentes | 6.716 linhas de setembro divergem, incluindo 5.542 pagantes do corte | John + Codex |
+| 2026-10-27 | eventos × retrato | Consistência | Renovação desligada reconstruída difere do retrato | Preservar fontes separadas; marcar divergência e estado inicial não informado; fora da clusterização candidata | Eventos ordenados pelo horário recebido; não reordenar para forçar concordância | 5 divergências conhecidas; 1.112 ativos sem estado inicial nos eventos relevantes | John + Codex |
+| 2026-10-27 | pagamentos | Regra | Última cobrança não é receita mensal reconhecida | Criar apenas aproximação descritiva: última cobrança mensal ou anual / 12; taxas separadas | Apenas aprovados antes do corte, sem duplicatas; não desconta estornos/chargebacks nem calcula LTV/ROI | Todos os 14.753 pagantes têm ao menos uma cobrança aprovada | John + Codex |
+| 2026-10-27 | base para clusterização | Regra | Vazamento e peso excessivo de variáveis correlacionadas | Entregar somente indicadores observados como candidatos; excluir desfecho futuro, intenção de cancelamento, identificadores como variável e valores financeiros | Leonardo seleciona variáveis e escalas; 17 candidatas, mais user_id como chave | 14.753 linhas | John + Codex |
+
 ### Faturamento mensal
 
 O faturamento do mês segue quatro etapas, nesta ordem:

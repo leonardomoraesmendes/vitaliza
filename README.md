@@ -57,6 +57,21 @@ python3 -m venv .venv
 | [`05_temporalidade_uso_mensal`](notebooks/05_temporalidade_uso_mensal.ipynb) | Mês sem treino em 2025 × 2026 | Ausente em 2025, zero em 2026: média cai de 265 para 118 min só pela mudança de registro |
 | [`06_unicidade_atividades`](notebooks/06_unicidade_atividades.ipynb) | Treinos que chegam pelo app e pelo relógio | 9.383 pares (5.199 garmin + 4.184 apple_health), só visíveis com o fuso do garmin corrigido |
 
+## Contribuição de John — Semana 5
+
+Após gerar as saídas localmente, a preparação e o diagnóstico estarão em `dados/saidas/s5_john/sintese_para_relatorio.md`, com método completo em `dados/saidas/s5_john/diagnostico.md`. Esses arquivos não são versionados.
+O ponto de entrada para estudo é [`notebooks/07_preparacao_diagnostico_john.ipynb`](notebooks/07_preparacao_diagnostico_john.ipynb).
+
+Para reproduzir, na raiz: `.venv/bin/python src/preparar_diagnostico_s5.py`.
+Verificação das regras: `.venv/bin/python -m unittest discover -s tests -v`.
+
+- `dados/processados/s5_john/base_clusterizacao.csv`: 14.753 pagantes, chave `user_id` e variáveis candidatas; tratar ausências e selecionar/padronizar variáveis antes do agrupamento.
+- `dados/processados/s5_john/base_assinantes_corte.csv`: contexto complementar, valores descritivos e alertas de conciliação.
+- `dados/processados/s5_john/painel_churn_mensal.parquet`: exposições históricas, uso anterior e desfecho dentro da cobertura; não concatenar como se cada linha fosse uma pessoa distinta.
+- `dados/saidas/s5_john/`: tabelas agregadas, quatro gráficos e dicionário das variáveis. Assim como os arquivos individuais, essas saídas são ignoradas no Git.
+
+Os resultados não incluem clusters, previsão futura, uplift ou ROI. O PDF de leitura, quando exportado, acompanha a síntese e não substitui as tabelas e o método.
+
 ## Como montar os dados
 
 `dados/` não é versionado. Depois de clonar:

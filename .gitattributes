@@ -1,0 +1,2 @@
+# PDFs gerados são documentos binários; preservar os bytes e evitar diffs textuais.
+*.pdf binary
