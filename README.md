@@ -82,6 +82,12 @@ Reprodução, após a preparação da base: `.venv/bin/python src/valor_prioriza
 
 Bases individuais, relatórios, auditoria e tabelas permanecem em `dados/`, ignorado no Git, conforme a revisão do grupo no PR #4. O GitHub concentra código, decisões, instruções e o registro da transferência de responsabilidade. Os cenários distinguem contribuição equivalente da carteira de valor incremental de uma intervenção. Clusters, efeito das ações e priorização individual continuam como dependências para consolidar a decisão de retenção.
 
+## Clusterização de Leonardo — Semana 5
+
+Os 14.753 pagantes no corte se dividem em quatro segmentos de comportamento: Distantes (18,9%), Engajados em casa (29,2%), Engajados ao ar livre (32,5%) e Recém-chegados (19,4%). Os nomes são provisórios; as personas são da frente de Kiril. Um dado que não entrou no agrupamento valida o resultado: 57,5% dos Distantes já desligaram a renovação, contra 3% a 8% nos demais segmentos. [Método, tabela comparativa e limitações](docs/entregas/clusterizacao_s5.md); roteiro de estudo em [`notebooks/08_clusterizacao.ipynb`](notebooks/08_clusterizacao.ipynb).
+
+Para reproduzir, depois da preparação de John: `.venv/bin/python src/clusterizacao_s5.py --k 4`. A atribuição `user_id` → segmento fica em `dados/processados/s5_leo/segmentos.csv`, fora do Git.
+
 ## Como montar os dados
 
 `dados/` não é versionado. Depois de clonar:

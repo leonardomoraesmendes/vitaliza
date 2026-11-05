@@ -27,10 +27,21 @@ Todo problema de qualidade ou regra de cálculo entra na tabela: uma linha por d
 | 2026-10-22 | `uso_mensal.csv` | Temporalidade | Mês sem treino muda de forma na virada: linha ausente em 2025, linha com zero em 2026. Média do arquivo cai de 265 para 118 min sem mudança de comportamento | Comparar médias entre anos só com `minutos > 0`; ao montar variáveis por usuário e mês, linha ausente em 2025 vale zero | `minutos == 0`; ausência de `user_id` × `mes` em 2025 | 303.735 linhas zeradas (todas em 2026) | Leo + Claude |
 | 2026-10-22 | `uso_mensal.csv` | Temporalidade | Linhas zeradas com `sessoes_app > 0` (abriu o app sem treinar) só existem a partir de 2026 | Usar como variável só em janelas de 2026; não reconstruível para 2025 | `minutos == 0` e `sessoes_app > 0` | 262.242 (86% das zeradas) | Leo + Claude |
 | 2026-10-22 | `heatmaps_90d/` | — | Imagens entregues em zip | Extrair em `2026-07-31/` e `2026-09-30/`; remover zips e `__MACOSX` | Contagem igual ao dicionário | 12.426 + 13.047 imagens | Leo + Claude |
+| 2026-11-04 | `base_clusterizacao.csv` | Consistência | Seis variáveis de volume (treinos, minutos, dias ativos; 30d e 90d) medem o mesmo fato | Só a frequência (dias ativos) entra no agrupamento; `seguindo` sai por repetir `seguidores` | Spearman 0,80–0,99 entre as de volume; 0,79 entre seguidores e seguindo | 6 variáveis → 1; 2 → 1 | Leo + Claude |
+| 2026-11-04 | `base_clusterizacao.csv` | Validade | `tickets_90d` quase constante: padronizada, criaria um cluster por efeito de escala | Fora do agrupamento; só descreve os segmentos | 96% com zero | 14.753 | Leo + Claude |
+| 2026-11-04 | `base_clusterizacao.csv` | Temporalidade | Contas com menos de 90 dias não tiveram a janela inteira; pareciam pouco ativas por construção | Frequência e posts como taxa: ÷ min(90, cadastro + 1). Denominador é o cadastro, pois o treino é grátis antes da assinatura | 206 com mais dias ativos que dias de assinatura; 0 acima de cadastro + 1 | 2.784 | Leo + Claude |
+| 2026-11-04 | `base_clusterizacao.csv` | Temporalidade | Tendência (30d × 30d anteriores) sai positiva por construção quando a janela anterior está incompleta | Tendência neutra (0) para contas com menos de 60 dias | `tempo_cadastro_dias + 1 < 60` | 1.938 | Leo + Claude |
+| 2026-11-04 | `base_clusterizacao.csv` | Completude | Recência ausente para quem não treinou em 2026 | Preencher com 273 dias, limite inferior (sem treino desde 01/01) | Ausências = exatamente os 177 com `sem_treino_observado_2026 = 1` | 177 | Leo + Claude |
+| 2026-11-04 | `base_clusterizacao.csv` | Completude | Proporção de vídeo e minutos por treino indefinidos sem treino em 90 dias (divisão por zero) | Mediana (valor neutro): a ausência não puxa a pessoa para nenhuma modalidade | Ausências = exatamente os 759 com `treinos_90d = 0` | 759 | Leo + Claude |
+| 2026-11-04 | `base_clusterizacao.csv` | Regra | Escala decide quais grupos aparecem | `log1p` nas de cauda longa; corte nos percentis 1 e 99; padronização. K-means k = 4 | Ver [Clusterização](#clusterização-s5) | 14.753 (nenhuma removida) | Leo + Claude |
 
 ---
 
 ## Detalhes
+
+### Clusterização (S5)
+
+Código: `src/clusterizacao_s5.py`; roteiro: `notebooks/08_clusterizacao.ipynb`; método e resultado: [`docs/entregas/clusterizacao_s5.md`](docs/entregas/clusterizacao_s5.md). Oito variáveis, uma por dimensão (frequência, intensidade, recência, tendência, modalidade, social, rede, tempo de casa). Plano, canal, receita e renovação ficam fora do agrupamento. Escolha de k = 4 pela estabilidade (ARI mínimo 0,98 em 20 reamostragens de 80%); silhueta de 0,17 indica segmentos como cortes de um contínuo, não grupos isolados. Quatro assinantes conferidos contra o bruto com lógica independente.
 
 ### Valor e priorização assumidos por John (03/11/2026)
 
