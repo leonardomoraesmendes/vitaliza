@@ -67,6 +67,22 @@ Detalhamento: [integração](docs/entregas/integracao_personas_s5.md), [personas
 
 ## Detalhes
 
+### Qualidade e metodologia de Claudinne — S5 (04/11/2026)
+
+Revisão de qualidade, tratamentos e limitações sobre as bases de `dados/processados/s5_john/`. Código: `src/checagens_qualidade_s5.py`. Texto da frente: [`docs/entregas/qualidade_metodologia_s5.md`](docs/entregas/qualidade_metodologia_s5.md). Marcações por assinante em `dados/processados/s5_claudinne/qualidade_flags.csv`, fora do Git.
+
+| Data | Arquivo | Dimensão | Problema | Decisão | Critério | Linhas afetadas | Quem |
+|---|---|---|---|---|---|---|---|
+| 2026-11-04 | `base_assinantes_corte.csv` | Consistência | `sistema` com grafias diferentes (`ios`, `iOS`, `IOS`, `android`, `Android`) | Padronizar em minúsculas | Valor ≠ valor em minúsculas | 3.665 (24,8%) | Claudinne + Claude |
+| 2026-11-04 | `base_assinantes_corte.csv` | Consistência | Anual por influenciador ainda em R$ 239,90 depois do primeiro ano | **Pendente:** preço de renovação para projeção (enunciado: R$ 299,90) | `ultima_cobranca_aprovada_reais` = 239,90 e `tempo_assinatura_dias` > 365 | 189 | Claudinne + Claude |
+| 2026-11-04 | `base_clusterizacao.csv` | Completude | Sem treino em 90 dias: vídeo e intensidade indefinidos (característica do dado) | Proposta: segmento por regra, fora do algoritmo | `treinos_90d` = 0 | 759 | Claudinne + Claude |
+| 2026-11-04 | `base_clusterizacao.csv` | Temporalidade | Recência limitada a 2026 (característica do dado) | Marcar como censurado; ler como "desde pelo menos 01/01/2026" | `sem_treino_observado_2026` = 1 | 177 | Claudinne + Claude |
+| 2026-11-04 | `base_clusterizacao.csv` | Temporalidade | Campanha de 10/08 dentro da janela de 90 dias | **Pendente:** comparar variáveis de uso entre os quatro grupos antes de fechar os clusters | Janela 03/07 a 30/09 | 14.120 sorteados | Claudinne + Claude |
+| 2026-11-04 | `base_clusterizacao.csv` | Validade | Mais treinos que dias de assinatura (característica do dado) | Manter: treinos do teste de 7 dias | Cadastro 7 dias antes do início pago em 100% dos casos | 395 | Claudinne + Claude |
+| 2026-11-04 | `base_clusterizacao.csv` | Validade | Sessões e volumes extremos (característica do dado) | Manter e limitar no percentil 99 | > 300 min por treino ou ≥ 40 treinos em 30 dias | 12 + 46 | Claudinne + Claude |
+| 2026-11-04 | `base_clusterizacao.csv` | Regra | Variáveis redundantes pesam em dobro na distância | Proposta: uma variável por conceito | Spearman ≥ 0,80 | 8 de 17 variáveis | Claudinne + Claude |
+| 2026-11-04 | `base_clusterizacao.csv` | Completude | Onboarding vazio, sem ser opcional | Fora do algoritmo; "não informado" nas personas | Perfil de uso igual ao de quem respondeu | 2.409 | Claudinne + Claude |
+
 ### Clusterização (S5)
 
 Código: `src/clusterizacao_s5.py`; roteiro: `notebooks/08_clusterizacao.ipynb`; método e resultado: [`docs/entregas/clusterizacao_s5.md`](docs/entregas/clusterizacao_s5.md). Oito variáveis, uma por dimensão (frequência, intensidade, recência, tendência, modalidade, social, rede, tempo de casa). Plano, canal, receita e renovação ficam fora do agrupamento. Escolha de k = 4 pela estabilidade (ARI mínimo 0,98 em 20 reamostragens de 80%); silhueta de 0,17 indica segmentos como cortes de um contínuo, não grupos isolados. Quatro assinantes conferidos contra o bruto com lógica independente.
