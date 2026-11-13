@@ -185,6 +185,16 @@ Referências fixadas:
 - SHA-256 PDF de 12: `5918af47e0bcbb6c463a1fa68653786a47c792c0234f3668c9bd8ff5b3622403`.
 - SHA-256 PDF de 96: `10e187f1a189632cb209943d9418bcf701cee7e91b88c6326354bac72a50c94d`.
 
+Versão vigente dos sumários (v2). Os PDFs acima são a versão 1: o texto deles ainda traz os limites
+de erro de 25% e 3%, retirados na seção anterior. Os de 12 e de 96 registros passaram a ter a
+versão 2, que remove essa frase e não muda nenhuma métrica, contagem ou pessoa conferida. Os
+arquivos ficam com Kiril, fora do repositório público; os hashes permitem confirmar qual versão
+cada pessoa recebeu.
+
+- SHA-256 PDF de 12, v2 (`sumario_executivo_conferencia_v2.pdf`): `eb4a711457b63642a2bd1239a2892632bdfa10f9788005ae2dd72d1b23ab64b5`.
+- SHA-256 PDF de 96, v2 (`sumario_executivo_amostra_96_registros_v2.pdf`): `e8b53b8946a4014f56888b73bc786228deac41bd033ce3cdcc56e7049062ec69`.
+- `Personas Vitaliza – rascunho.pdf` também está superado: traz R$ 9,8 mil no cenário de aniversários; o valor correto é R$ 9.539,30 (`personas_s5.md`).
+
 Em um ambiente isolado, com as bases originais montadas conforme o README:
 
 ```sh
